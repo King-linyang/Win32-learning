@@ -28,14 +28,15 @@ set(CMAKE_CXX_STANDARD 20)
 # 添加子目录
 add_subdirectory(win32learnig/windem001)
 add_subdirectory(win32learnig/windem002)
+add_subdirectory(win32learnig/windem003)
 
-if (WIN32)
-    add_definitions(-D_WIN32_WINNT=0x0601)
-endif ()
-
-if (WIN32)
-    set(CMAKE_MFC_FLAG 2)
-    add_definitions(-D_AFXDLL)
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mwindows")
-ENDIF ()
+#if (WIN32)
+#    add_definitions(-D_WIN32_WINNT=0x0601)
+#endif ()
+#
+#if (WIN32)
+#    set(CMAKE_MFC_FLAG 2)
+#    add_definitions(-D_AFXDLL)
+#    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mwindows")
+#ENDIF ()
 
