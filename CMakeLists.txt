@@ -1,7 +1,7 @@
 # cmake 版本
 cmake_minimum_required(VERSION 3.26)
 # 语言
-project(CPlusPlus_game)
+project(Win32-learning)
 
 # c语言标准
 set(CMAKE_CXX_STANDARD 20)
@@ -23,7 +23,12 @@ set(CMAKE_CXX_STANDARD 20)
 #)
 
 #可执行文件
-add_executable(CPlusPlus_game main.cpp)
+#add_executable(Win32-learning win32learnig/windem001/main.cpp)
+
+# 添加子目录
+add_subdirectory(win32learnig/windem001)
+add_subdirectory(win32learnig/windem002)
+
 if (WIN32)
     add_definitions(-D_WIN32_WINNT=0x0601)
 endif ()
