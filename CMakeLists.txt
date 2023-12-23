@@ -29,6 +29,7 @@ set(CMAKE_CXX_STANDARD 20)
 add_subdirectory(win32learnig/windem001)
 add_subdirectory(win32learnig/windem002)
 add_subdirectory(win32learnig/windem003)
+add_subdirectory(win32learnig/windem004)
 
 #if (WIN32)
 #    add_definitions(-D_WIN32_WINNT=0x0601)
