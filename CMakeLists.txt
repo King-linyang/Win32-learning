@@ -6,6 +6,9 @@ project(Win32-learning)
 # c语言标准
 set(CMAKE_CXX_STANDARD 20)
 
+# 设置项目的字符集为 UTF-8
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexec-charset=UTF-8")
+
 
 # 包含头文件
 #include_directories(
@@ -30,6 +33,7 @@ add_subdirectory(win32learnig/windem001)
 add_subdirectory(win32learnig/windem002)
 add_subdirectory(win32learnig/windem003)
 add_subdirectory(win32learnig/windem004)
+add_subdirectory(win32learnig/windem005)
 
 #if (WIN32)
 #    add_definitions(-D_WIN32_WINNT=0x0601)
