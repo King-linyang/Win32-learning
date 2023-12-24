@@ -44,19 +44,11 @@ void myKeyDown(HWND pHwnd, WPARAM param) {
     sprintf(test, "键盘按下--键码: %u\n", param);
     WriteConsole(g_hOutPut, test, strlen(test), nullptr, nullptr);
 }
-
-void onChar(HWND pHwnd, WPARAM param) {
-    char test[256] = {0};
-    test[256] = {0};
+void onChar(HWND pHwnd, WPARAM param){
+    char test[256] = {0}; test[256] = {0};
     sprintf(test, "字符输入--字符: %u\n", param);
     WriteConsole(g_hOutPut, test, strlen(test), nullptr, nullptr);
 }
-
-void onTimer(HWND pHwnd, WPARAM param) {
-    char test[256] = {0};
-    sprintf(test, "定时器消息--定时器ID: %u\n", param);
-}
-
 //窗口处理函数
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
     switch (message) {
@@ -78,13 +70,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
             myKeyDown(hWnd, wParam);
             break;
         case WM_CREATE:
-            SetTimer(hWnd, 1, 1000, nullptr);
-            SetTimer(hWnd, 1, 2000, nullptr);
             OnCreate(hWnd, lParam);
             PostMessage(hWnd, WM_MYNESS, 1, 2);
-            break;
-        case WM_TIMER:
-            onTimer(hWnd, wParam);
             break;
         case WM_MYNESS:
             ProMyMess(hWnd, wParam, lParam);
