@@ -37,6 +37,7 @@ add_subdirectory(win32learnig/windem005)
 add_subdirectory(win32learnig/windem006)
 add_subdirectory(win32learnig/windem007)
 add_subdirectory(win32learnig/windem008)
+add_subdirectory(win32learnig/windem009)
 
 #if (WIN32)
 #    add_definitions(-D_WIN32_WINNT=0x0601)
