@@ -36,14 +36,33 @@ LPCTSTR lpCursorName // name or resource identifier
 HCURSOR SetCursor(
 HCURSOR hCursor // handle to cursor
 );
-SetCursor 在 WM_SETCURSOR 消息中进行设置  
+SetCursor 在 WM_SETCURSOR 消息中进行设置
+
 - WM_SETCURSOR 消息参数
   wPARAM - 当前使用的光标句柄
   lPARAM - LOWORD 当前区域的代码（Hit-Test code )
   HTCLIENT / HTCAPTION…
   HIWORD - 当前鼠标消息ID
 
+# 加速键资源
 
+- 添加 资源添加加速键表，增加命令ID对应的加速键。
+- 使用
+  加载加速键表
+  HACCEL LoadAccelerators(
+  HINSTANCE hInstance, // handle to module
+  LPCTSTR lpTableName // accelerator table name
+  ); 返回加速键表句柄
+  翻译加速键
+  int TranslateAccelerator(
+  HWND hWnd,//处理消息的窗口句柄
+  HACCEL hAccTable, //加速键句柄
+  LPMSG lpMsg //消息
+  ); 如果是加速键，返回非零。
+- 在WM_COMMAND中相应消息，消息参数
+  wPARAM ： HIWORD 为1表示加速键，为0表示菜单。
+  LOWORD 为命令ID。
+  lParam：为0
 
 
 
