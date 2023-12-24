@@ -8,6 +8,7 @@
 #include <cstdio>
 
 //HANDLE g_hOutPut = 0;//接受标准输出句柄
+#define WM_MYNESS WM_USER+1001   //自定义消息
 
 void OnCreate(HWND hWnd, LPARAM lParam) {
     CREATESTRUCT *pCreate = (CREATESTRUCT *) lParam;
@@ -21,14 +22,26 @@ void OnSize(HWND hWnd, LPARAM lParam) {
     printf("OnSize: 宽%d, 高%d\n", width, height);
 }
 
+void ProMyMess(HWND hWnd, LPARAM lParam, LPARAM i) {
+    char test[256] = {0};
+    sprintf(test, "处理自定义消息: %ld\n", lParam);
+    MessageBox(hWnd, test, "处理自定义消息", MB_OK);
+}
+
 //窗口处理函数
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
     switch (message) {
         case WM_DESTROY:
-            PostQuitMessage(0);//使GetMessage返回0
+//            PostQuitMessage(0);//使GetMessage返回0
+            PostMessage(hWnd, WM_QUIT, 0, 0);
+//            SendMessage(hWnd, WM_QUIT, 0, 0);
             break;
         case WM_CREATE:
             OnCreate(hWnd, lParam);
+            PostMessage(hWnd, WM_MYNESS, 1, 2);
+            break;
+        case WM_MYNESS:
+            ProMyMess(hWnd, wParam, lParam);
             break;
         case WM_SIZE:
             OnSize(hWnd, lParam);
@@ -101,9 +114,24 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     UpdateWindow(hWnd);//更新窗口-重绘
     //消息循环
     MSG msg = {0};
-    while (GetMessage(&msg, NULL, 0, 0)) {
-        TranslateMessage(&msg);//翻译消息
-        DispatchMessage(&msg);//分派消息
+//    while (GetMessage(&msg, NULL, 0, 0)) {
+//        TranslateMessage(&msg);//翻译消息
+//        DispatchMessage(&msg);//分派消息
+//    }
+    while (1) {
+        if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+            //有消息
+            //获取消息
+            if (GetMessage(&msg, NULL, 0, 0)) {
+                TranslateMessage(&msg);//翻译消息
+                DispatchMessage(&msg);//分派消息
+            } else {
+                return 0;
+            }
+        } else {
+            //没有消息--空闲处理
+//            printf("没有消息\n");
+        }
     }
-    return 0;
+//    return 0;
 }
