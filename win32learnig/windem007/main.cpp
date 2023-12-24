@@ -7,8 +7,9 @@
 #include "main.h"
 #include <cstdio>
 
-//HANDLE g_hOutPut = 0;//接受标准输出句柄
+HANDLE g_hOutPut = 0;//接受标准输出句柄
 #define WM_MYNESS WM_USER+1001   //自定义消息
+
 
 void OnCreate(HWND hWnd, LPARAM lParam) {
     CREATESTRUCT *pCreate = (CREATESTRUCT *) lParam;
@@ -28,13 +29,45 @@ void ProMyMess(HWND hWnd, LPARAM lParam, LPARAM i) {
     MessageBox(hWnd, test, "处理自定义消息", MB_OK);
 }
 
+void myPaint(HWND hWnd) {
+    printf("myPaint绘图消息\n");
+
+    PAINTSTRUCT ps = {0};
+    HDC hdc = BeginPaint(hWnd, &ps);
+    TextOut(hdc, 10, 10, "Hello World", 11);
+    EndPaint(hWnd, &ps);
+    //绘图代码只能在绘图消息中进行处理
+}
+
+void myKeyDown(HWND pHwnd, WPARAM param) {
+    char test[256] = {0};
+    sprintf(test, "键盘按下--键码: %u\n", param);
+    WriteConsole(g_hOutPut, test, strlen(test), nullptr, nullptr);
+}
+void onChar(HWND pHwnd, WPARAM param){
+    char test[256] = {0}; test[256] = {0};
+    sprintf(test, "字符输入--字符: %u\n", param);
+    WriteConsole(g_hOutPut, test, strlen(test), nullptr, nullptr);
+}
 //窗口处理函数
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
     switch (message) {
+        case WM_CHAR:
+            onChar(hWnd, wParam);
+            break;
+        case WM_PAINT:
+            myPaint(hWnd);
+            break;
+        case WM_LBUTTONDOWN:
+            myPaint(hWnd);
+            break;
         case WM_DESTROY:
-//            PostQuitMessage(0);//使GetMessage返回0
-            PostMessage(hWnd, WM_QUIT, 0, 0);
+            PostQuitMessage(0);//使GetMessage返回0
+//            PostMessage(hWnd, WM_QUIT, 0, 0);
 //            SendMessage(hWnd, WM_QUIT, 0, 0);
+            break;
+        case WM_KEYDOWN:
+            myKeyDown(hWnd, wParam);
             break;
         case WM_CREATE:
             OnCreate(hWnd, lParam);
@@ -49,8 +82,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
         default:
             return DefWindowProc(hWnd, message, wParam, lParam);
     }
-    return 0;
+    return DefWindowProc(hWnd, message, wParam, lParam);
 }
+
 
 /**
  * @brief 程序入口
@@ -63,8 +97,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 //    MessageBox(NULL, "hello world", "hello world", MB_YESNOCANCEL);
 
-//    AllocConsole();//增加docs窗口
-//    g_hOutPut = GetStdHandle(STD_OUTPUT_HANDLE);//获取标准输出句柄
+    AllocConsole();//增加docs窗口
+    g_hOutPut = GetStdHandle(STD_OUTPUT_HANDLE);//获取标准输出句柄
     // 注册窗口类
     WNDCLASS wndClass = {0};
     wndClass.cbClsExtra = 0;//缓冲区
@@ -85,29 +119,6 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     HWND hWnd = CreateWindowEx(0, "Main", "MyWindow", WS_OVERLAPPEDWINDOW,
                                CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
                                NULL, NULL, hInstance, (LPVOID) sss);
-
-    //子窗口
-    // 注册窗口类
-    WNDCLASS wndClassC = {0};
-    wndClassC.cbClsExtra = 0;//缓冲区
-    wndClassC.cbWndExtra = 0;//缓冲区
-    wndClassC.hbrBackground = (HBRUSH) (COLOR_WINDOW + 1);//背景颜色
-    wndClassC.hCursor = LoadCursor(NULL, IDC_ARROW);//光标
-    wndClassC.hIcon = LoadIcon(NULL, IDI_APPLICATION);//图标
-    wndClassC.hInstance = hInstance;//实例句柄
-    wndClassC.lpfnWndProc = DefWindowProc;//窗口处理函数
-    wndClassC.lpszClassName = "Child";//窗口类名
-    wndClassC.lpszMenuName = NULL;//菜单名 NULL:表示不要菜单
-    wndClassC.style = CS_HREDRAW | CS_VREDRAW;//窗口水平和垂直方向是否可变(重新画)
-
-    RegisterClass(&wndClassC);//注册窗口类
-    //创建子窗口
-    HWND hWndC = CreateWindowEx(0, "Child", "MyWindow", WS_CHILD | WS_VISIBLE | WS_OVERLAPPEDWINDOW,
-                                CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
-                                hWnd, NULL, hInstance, NULL);
-    HWND hWndC1 = CreateWindowEx(0, "Child", "MyWindow", WS_CHILD | WS_VISIBLE | WS_OVERLAPPEDWINDOW,
-                                 CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
-                                 hWnd, NULL, hInstance, NULL);
 
 
     ShowWindow(hWnd, SW_SHOW);//显示窗口
@@ -133,5 +144,5 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 //            printf("没有消息\n");
         }
     }
-//    return 0;
+    return 0;
 }
