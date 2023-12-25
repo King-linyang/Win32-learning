@@ -56,6 +56,20 @@ void myPaint(HWND hWnd) {
     Ellipse(hdc, 100, 100, 400, 400);
     //绘制位图
     mydrawbitmap(hdc);
+    //设置颜色
+    SetTextColor(hdc, RGB(255, 0, 0));
+    SetBkColor(hdc, RGB(255, 0, 0));//只能适用于不透明
+    SetBkMode(hdc, TRANSPARENT);//设置字符串背景透明
+    //绘制字符串
+    char str[] = "hello world hello world hello world hello world";
+    TextOut(hdc, 600, 400, str, strlen(str));
+    RECT rc;
+    rc.left = 400;
+    rc.top = 400;
+    rc.right = 500;
+    rc.bottom = 500;
+//    Rectangle(hdc, rc.left, rc.top, rc.right, rc.bottom);
+    DrawText(hdc, str, strlen(str), &rc, DT_LEFT | DT_TOP | DT_WORDBREAK | DT_NOCLIP);
 
     SelectObject(hdc, oOldBrush);
 //    DeleteObject(hbrush);

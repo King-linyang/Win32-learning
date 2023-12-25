@@ -139,12 +139,40 @@ COLORREF crColor //设置的颜色
   7 释放位图  
   DeleteObject  
   8 释放匹配的DC  
-  DeleteDC  
+  DeleteDC
 
+# 字体
 
+- 字体相关
+  Window常用的字体为 TrueType格式的字体文件
+  字体名 - 标识字体类型
+  HFONT - 字体句柄
 
-
-
-
+- 字体的使用
+  1 创建字体
+  HFONT CreateFont(
+  int nHeight, //字体高度
+  int nWidth, //字体宽度
+  int nEscapement, //字符串倾斜角度
+  int nOrientation,//字符旋转角度
+  int fnWeight, //字体的粗细
+  DWORD fdwItalic, //斜体
+  DWORD fdwUnderline, //字符下划线
+  DWORD fdwStrikeOut, //删除线
+  DWORD fdwCharSet, //字符集  
+  DWORD fdwOutputPrecision,//输出精度
+  DWORD fdwClipPrecision,//剪切精度
+  DWORD fdwQuality,//输出质量
+  DWORD fdwPitchAndFamily,//匹配字体
+  LPCTSTR lpszFace //字体名称
+  );
+  2 应用字体到DC
+  SelectObject
+  3 绘制文字
+  DrawText/TextOut
+  4 取出字体
+  SelectObject
+  5 删除字体
+  DeleteObject
 
 
