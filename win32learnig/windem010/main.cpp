@@ -60,6 +60,9 @@ void myPaint(HWND hWnd) {
     SetTextColor(hdc, RGB(255, 0, 0));
     SetBkColor(hdc, RGB(255, 0, 0));//只能适用于不透明
     SetBkMode(hdc, TRANSPARENT);//设置字符串背景透明
+    //设置字体
+    HFONT hfont = CreateFont(30, 0, 45, 0, 900, 1, 1, 1, GB2312_CHARSET, 0, 0, 0, 0, "黑体");
+    HGDIOBJ oOldFont = SelectObject(hdc, hfont);//oOldFont原来的字体
     //绘制字符串
     char str[] = "hello world hello world hello world hello world";
     TextOut(hdc, 600, 400, str, strlen(str));
@@ -77,6 +80,8 @@ void myPaint(HWND hWnd) {
     SelectObject(hdc, oOldPen);
     DeleteObject(hdc);
 
+    SelectObject(hdc, oOldFont);
+    DeleteObject(hfont);
     EndPaint(hWnd, &ps);
 }
 
