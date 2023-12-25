@@ -92,9 +92,54 @@ COLORREF crColor //设置的颜色
 - 其他  
   可以使用 GetStockObject 函数获取系统维护的画刷、画笔等。  
   如果不使用画刷填充，需要使用NULL_BRUSH参数，获取不填充的画刷。  
-  GetStockObject返回的画刷不需要DeleteObject。  
+  GetStockObject返回的画刷不需要DeleteObject。
 
+# 位图绘制
 
+- 位图相关  
+  光栅图形 - 记录图像中每一点的颜色等信息。  
+  矢量图形 - 记录图像算法、绘图指令等。  
+  HBITMAP - 位图句柄
+- 位图的使用  
+  1 在资源中添加位图资源  
+  2 从资源中加载位图LoadBitmap  
+  3 创建一个与当前DC相匹配的DC（内存DC）  
+  HDC CreateCompatibleDC(  
+  HDC hdc //当前DC句柄，可以为NULL（使用屏幕DC）  
+  ); 返回创建好的DC句柄  
+  4 将位图放入匹配的DC中 SelectObject  
+  5 成像（1:1）  
+  BOOL BitBlt(  
+  HDC hdcDest, //目的DC  
+  int nXDest, // 目的左上X坐标  
+  int nYDest, // 目的左上Y坐标  
+  int nWidth, // 目的宽度  
+  int nHeight, // 目的高度  
+  HDC hdcSrc, //源DC  
+  int nXSrc, // 源左上X坐标  
+  int nYSrc, // 源左上Y坐标  
+  DWORD dwRop //成像方法 SRCCOPY  
+  );  
+  缩放成像  
+  BOOL StretchBlt(  
+  HDC hdcDest, // handle to destination DC  
+  int nXOriginDest, // x-coord of destination upper-left corner  
+  int nYOriginDest, // y-coord of destination upper-left corner  
+  int nWidthDest, // width of destination rectangle  
+  int nHeightDest, // height of destination rectangle  
+  HDC hdcSrc, // handle to source DC  
+  int nXOriginSrc, // x-coord of source upper-left corner  
+  int nYOriginSrc, // y-coord of source upper-left corner  
+  int nWidthSrc, // 源DC宽  
+  int nHeightSrc, // 源DC高  
+  DWORD dwRop // raster operation code  
+  );  
+  6 取出位图  
+  SelectObject  
+  7 释放位图  
+  DeleteObject  
+  8 释放匹配的DC  
+  DeleteDC  
 
 
 

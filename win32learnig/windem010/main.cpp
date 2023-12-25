@@ -18,6 +18,22 @@ void drawPoint(HDC hdc) {
     LineTo(hdc, 400, 400);//画线
 }
 
+//绘制位图
+void mydrawbitmap(HDC hWnd) {
+//    //添加位图资源
+//    HBITMAP hbitmap = LoadBitmap(g_hOutPut, (CHAR *) IDB_BITMAP1);//IDB_BITMAP1这个是在位图的资源文件的.h文件中
+//    HDC hdc = CreateCompatibleDC(hWnd);
+//    //创建一个内存dc，构建一个虚拟区域，内存dc在虚拟区域中绘图
+//    HGDIOBJ oOldBitmap = SelectObject(hdc, hbitmap);
+//    //将位图选入内存dc，内存dc在虚拟区域中绘图
+//    BitBlt(hWnd, 100, 100, 100, 100, hdc, 0, 0, SRCCOPY);
+//    //将内存dc中的内容绘制到窗口dc中，拉伸
+//    StretchBlt(hWnd, 200, 200, 100, 100, hdc, 0, 0, 100, 100, SRCCOPY);
+//    SelectObject(hdc, oOldBitmap);
+//    DeleteObject(hbitmap);
+//    DeleteDC(hdc);
+}
+
 void myPaint(HWND hWnd) {
     //绘制窗口内容
     PAINTSTRUCT ps = {0};
@@ -38,6 +54,8 @@ void myPaint(HWND hWnd) {
     //画带颜色的图形
     Rectangle(hdc, 100, 100, 400, 400);
     Ellipse(hdc, 100, 100, 400, 400);
+    //绘制位图
+    mydrawbitmap(hdc);
 
     SelectObject(hdc, oOldBrush);
 //    DeleteObject(hbrush);
