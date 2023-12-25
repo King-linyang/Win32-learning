@@ -15,7 +15,7 @@ void drawPoint(HDC hdc) {
     for (int i = 0; i < 256; i++) {
         SetPixel(hdc, i, i, RGB(255, 0, 0));
     }
-    LineTo(hdc, 400, 400);
+    LineTo(hdc, 400, 400);//画线
 }
 
 void myPaint(HWND hWnd) {
@@ -24,8 +24,27 @@ void myPaint(HWND hWnd) {
     HDC hdc = BeginPaint(hWnd, &ps);
 //    drawPoint(hdc);//绘制一个点
 
+    //创建一个画笔,带颜色的
+    HPEN hpen = CreatePen(PS_SOLID, 5, RGB(255, 0, 0));//实线
+    HGDIOBJ oOldPen = SelectObject(hdc, hpen);//oOldPen原来的画笔
+    MoveToEx(hdc, 100, 100, NULL);
+
+    //创建画刷
+//    HBRUSH hbrush = CreateSolidBrush(RGB(255, 0, 0));//填充画刷
+//    HBRUSH hbrush = CreateHatchBrush(HS_CROSS, RGB(255, 0, 0));//纹理画刷
+    HGDIOBJ hbrush = GetStockObject(NULL_BRUSH);//获取操作系统的画刷(这个是透明画刷),这个画刷不需要销毁
+    HGDIOBJ oOldBrush = SelectObject(hdc, hbrush);//oOldBrush原来的画刷
+
+    //画带颜色的图形
     Rectangle(hdc, 100, 100, 400, 400);
     Ellipse(hdc, 100, 100, 400, 400);
+
+    SelectObject(hdc, oOldBrush);
+//    DeleteObject(hbrush);
+
+    SelectObject(hdc, oOldPen);
+    DeleteObject(hdc);
+
     EndPaint(hWnd, &ps);
 }
 
