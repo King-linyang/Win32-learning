@@ -113,15 +113,16 @@ DWORD dwMilliseconds // 等候时间 INFINITE
   多个线程对同一个数据进行原子操作，会产生结果丢失。比如执行++运算时。
 
 - 错误代码分析：  
-  当线程A执行g_value++时，如果线程切换时间正好是在线程A将值保存到g_value之前，线程B继续执行g_value++，那么当线程A再次被切换回来之后，会将原来线程A保存的值保存到g_value上，线程B进行的加法操作被覆盖。
+  当线程A执行g_value++时，如果`线程切换时间正好是在线程A将值保存到g_value之前`
+  ，线程B继续执行g_value++，那么当线程A再次被切换回来之后，会将原来线程A保存的值保存到g_value上，线程B进行的加法操作被覆盖。
 
 - 使用原子锁函数
   InterlockedIncrement  
   InterlockedDecrement  
   InterlockedCompareExchange  
   InterlockedExchange  
-  ...
-- 原子锁的实现： 直接对数据所在的内存操作，并且在任何一个瞬间只能有一个线程访问。
+  ...还有很多--**比较难用奥**
+- 原子锁的实现： `直接对数据所在的内存操作，并且在任何一个瞬间只能有一个线程访问。`  锁的是内存
 
 ## 互斥
 
@@ -134,14 +135,17 @@ DWORD dwMilliseconds // 等候时间 INFINITE
 ```c
 HANDLE CreateMutex(
 LPSECURITY_ATTRIBUTES lpMutexAttributes, //安全属性
-BOOL bInitialOwner,//初始的拥有者 TRUE/FALSE
+BOOL bInitialOwner,//初始的拥有者 TRUE/FALSE true表示创建互斥的线程拥有互斥/false相反
 LPCTSTR lpName //命名
 ); 创建成功返回互斥句柄
 ```
 
+只能有一个线程有互斥  
+当任何线程都不拥有互斥的时候互斥句柄有信号,当某一个线程又信号的时候互斥句柄无信号
+
 2 等候互斥
 
-WaitFor.... 互斥的等候遵循谁先等候谁先获取。
+WaitFor.... 互斥的等候遵循`谁先等候谁先获取互斥`。
 
 3 释放互斥
 
@@ -155,10 +159,15 @@ HANDLE hMutex // handle to mutex
 
 CloseHandle
 
+原子锁和互斥都是加锁机制  
+都是锁资源，一个线程拥有处理权限，其他线程等待
+
+事件和信号量处理的是线程之间协同工作的
+
 ## 事件
 
 - 相关问题
-  程序之间的通知的问题。
+  `程序(线程)之间的通知的问题。`
 - 事件的使用
 
 1 创建事件
@@ -166,12 +175,14 @@ CloseHandle
 ```c
 HANDLE CreateEvent(
 LPSECURITY_ATTRIBUTES lpEventAttributes, //安全属性
-BOOL bManualReset,                       
-//事件重置（复位）方式，TRUE手动，FALSE自动
-BOOL bInitialState, //事件初始状态，TRUE有信号
+BOOL bManualReset,
+//事件重置（复位|将事件句柄从有信号变成无信号）方式，TRUE手动，FALSE自动
+BOOL bInitialState, //事件创建之初的状态，TRUE表示创建时有信号
 LPCTSTR lpName //事件命名
 ); 创建成功返回 事件句柄
 ```
+
+`句柄是否有信号程序员可以自己控制--用途较广`
 
 2 等候事件
 
@@ -198,6 +209,8 @@ HANDLE hEvent // handle to event
 5 关闭事件 CloseHandle
 
 - 小心事件的死锁。
+  线程加的锁(信号)要释放  
+  线程加的事件(信号)要释放
 
 ## 信号量
 
@@ -210,18 +223,22 @@ HANDLE hEvent // handle to event
   1 创建 信号量
 
 ```c
-  HANDLE CreateSemaphore(
+HANDLE CreateSemaphore(
 LPSECURITY_ATTRIBUTES lpSemaphoreAttributes, //安全属性
-LONG lInitialCount, //初始化信号量数量
+LONG lInitialCount, //初始化信号量数量--触发一次waitfor..减一,减到0，阻塞
 LONG lMaximumCount, //信号量的最大值
 LPCTSTR lpName //命名
 ); 创建成功返回信号量句柄
 ```
 
+`信号量数量lInitialCount不为0的时候信号量有信号，信号量数量为0的时候信号量无信号`  
+`有信号可以使用waitfor...等待`  
+`信号量句柄也可以等待使用waitfor...`
+
 2 等候信号量
 
 ```c
-WaitFor... 每等候通过一次，信号量的信号减1，直到为0阻塞
+WaitFor... 每等候通过一次，信号量的信号(lInitialCount)减1，直到为0阻塞
 ```
 
 3 给信号量指定计数值
@@ -229,9 +246,9 @@ WaitFor... 每等候通过一次，信号量的信号减1，直到为0阻塞
 ```c
 BOOL ReleaseSemaphore(
 HANDLE hSemaphore, //信号量句柄
-LONG lReleaseCount, //释放数量
+LONG lReleaseCount, //释放数量--新的计数值
 LPLONG lpPreviousCount   
-//释放前原来信号量的数量，可以为NULL
+//释放前原来信号量的数量，可以为NULL--这个参数会返回目前信号量剩余的计数值
 );
 ```
 
